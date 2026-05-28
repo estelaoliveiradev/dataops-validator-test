@@ -5,7 +5,7 @@ Este é um Produto Mínimo Viável (MVP) de uma aplicação web desenvolvida par
 ## 🎯 Objetivos do Projeto
 
 - **Automação de Validação:** Cruzar o Plano de cenários esperados (Expectativa) com o Relatório de Roteirização (Realidade).
-- **Redução de Erros:** Identificar divergências de códigos de roteiro (TTs) de forma sistêmica.
+- **Redução de Erros:** Identificar divergências de Cenários de forma sistêmica.
 - **Visualização Analítica:** Oferecer um dashboard intuitivo para tomada de decisão rápida sobre a saúde da malha contábil.
 - **Processamento Eficiente:** Executar toda a engenharia de dados em memória, garantindo performance e conformidade (sem persistência temporária de arquivos).
 
