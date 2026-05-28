@@ -1,7 +1,3 @@
-Aqui está um **README.md** profissional, estruturado com foco em Engenharia de Dados e visando a documentação clara para stakeholders e desenvolvedores.
-
----
-
 # 🚀 DataOps Accounting Reconciliator (MVP)
 
 Este é um Produto Mínimo Viável (MVP) de uma aplicação web desenvolvida para automatizar a **homologação de roteirizações contábeis**. O objetivo principal é substituir a conferência manual e visual por um pipeline de dados automatizado, garantindo integridade e agilidade na esteira de DataOps contábil.
