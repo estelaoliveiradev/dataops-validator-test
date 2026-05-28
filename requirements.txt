@@ -1,0 +1,12 @@
+# Framework Web
+Flask==3.0.2
+Werkzeug==3.0.1
+# Processamento e Engenharia de Dados
+pandas==2.2.0
+numpy==1.26.4
+# Suporte a Arquivos Excel
+openpyxl==3.1.2
+# Visualização de Dados e Dashboards
+plotly==5.18.0
+# Servidor de Produção (Recomendado para deploy)
+gunicorn==21.2.0

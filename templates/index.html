@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conciliador DataOps | MVP</title>
+    <!-- Tailwind CSS para um design moderno e rápido -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Plotly.js para os gráficos interativos -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <!-- Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+
+    <!-- Header / Navbar -->
+    <nav class="bg-slate-900 p-4 text-white shadow-xl">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-blue-600 p-2 rounded-lg">
+                    <i class="fas fa-microchip text-xl"></i>
+                </div>
+                <h1 class="text-xl font-bold tracking-tight">
+                    DataOps <span class="text-blue-400">Conciliador</span>
+                </h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span class="text-xs bg-slate-800 border border-slate-700 px-3 py-1 rounded-full text-slate-400">
+                    v1.2 (Excel Support)
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto py-8 px-4">
+        
+        <!-- Alertas de Erro -->
+        {% if erro %}
+        <div class="mb-6 bg-red-50 border-l-4 border-red-500 p-4 shadow-sm animate-bounce">
+            <div class="flex items-center">
+                <i class="fas fa-exclamation-triangle text-red-500 mr-3"></i>
+                <p class="text-red-800 font-medium">{{ erro }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Seção de Upload e Templates -->
+        <section class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 mb-8">
+            <div class="mb-6">
+                <h2 class="text-lg font-semibold text-gray-800">Pipeline de Validação</h2>
+                <p class="text-sm text-gray-500">Suba os arquivos para cruzamento de roteiros contábeis.</p>
+            </div>
+
+            <form action="/" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+                <!-- Upload PH -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-gray-700">1. Cenario_Esperado (Expectativa)</label>
+                    <div class="relative border-2 border-dashed border-gray-200 rounded-xl p-4 hover:border-blue-400 transition-colors bg-gray-50">
+                        <input type="file" name="file_ph" accept=".csv, .xlsx, .xls" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" required>
+                        <div class="text-center">
+                            <i class="fas fa-file-invoice text-gray-400 mb-2"></i>
+                            <p class="text-xs text-gray-600">Arraste ou clique (CSV/XLSX)</p>
+                        </div>
+                    </div>
+                    <a href="/download_template/ph" class="inline-flex items-center text-xs text-blue-600 hover:text-blue-800 font-medium mt-2">
+                        <i class="fas fa-download mr-1"></i> Baixar Modelo Excel PH
+                    </a>
+                </div>
+
+                <!-- Upload POF -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-gray-700">2. Cenario_Realizado (Realidade)</label>
+                    <div class="relative border-2 border-dashed border-gray-200 rounded-xl p-4 hover:border-blue-400 transition-colors bg-gray-50">
+                        <input type="file" name="file_pof" accept=".csv, .xlsx, .xls" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" required>
+                        <div class="text-center">
+                            <i class="fas fa-file-import text-gray-400 mb-2"></i>
+                            <p class="text-xs text-gray-600">Arraste ou clique (CSV/XLSX)</p>
+                        </div>
+                    </div>
+                    <a href="/download_template/pof" class="inline-flex items-center text-xs text-blue-600 hover:text-blue-800 font-medium mt-2">
+                        <i class="fas fa-download mr-1"></i> Baixar Modelo Excel POF
+                    </a>
+                </div>
+
+                <!-- Botão de Ação -->
+                <div class="pt-7">
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-xl shadow-lg shadow-blue-200 transition-all transform hover:-translate-y-1 flex items-center justify-center">
+                        <i class="fas fa-sync-alt mr-2"></i> Processar Dados
+                    </button>
+                    <p class="text-[10px] text-gray-400 mt-3 text-center uppercase tracking-widest">Processamento In-Memory</p>
+                </div>
+            </form>
+        </section>
+
+        {% if resultado %}
+        <!-- Dashboard de Resultados -->
+        <div class="animate-fadeIn">
+            
+            <!-- Cards de Métricas -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-emerald-500">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-gray-400 text-xs font-bold uppercase tracking-wider">Acurácia Geral</p>
+                            <h3 class="text-3xl font-black text-gray-800">{{ resultado.metricas.acuracia }}%</h3>
+                        </div>
+                        <div class="bg-emerald-50 p-3 rounded-full text-emerald-500 text-xl">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-blue-500">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-gray-400 text-xs font-bold uppercase tracking-wider">Performance</p>
+                            <h3 class="text-3xl font-black text-gray-800">{{ resultado.metricas.tempo }}s</h3>
+                        </div>
+                        <div class="bg-blue-50 p-3 rounded-full text-blue-500 text-xl">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-slate-500">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-gray-400 text-xs font-bold uppercase tracking-wider">Amostragem</p>
+                            <h3 class="text-3xl font-black text-gray-800">{{ resultado.metricas.total }}</h3>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-full text-slate-500 text-xl">
+                            <i class="fas fa-database"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfico e Tabela Detalhada -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <!-- Gráfico de Pizza -->
+                <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <h3 class="text-sm font-bold text-gray-700 uppercase mb-4 tracking-wide">Status da Homologação</h3>
+                    <div id="chart" class="w-full h-80"></div>
+                </div>
+
+                <!-- Tabela de Divergências -->
+                <div class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-sm font-bold text-gray-700 uppercase tracking-wide">Log de Conciliação</h3>
+                        <span class="text-xs font-medium px-2 py-1 bg-red-100 text-red-600 rounded">Divergências Prioritárias</span>
+                    </div>
+                    
+                    <div class="overflow-x-auto overflow-y-auto max-h-[400px]">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50 sticky top-0">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase tracking-wider">Cenário</th>
+                                    <th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase tracking-wider text-center">Expectativa</th>
+                                    <th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase tracking-wider text-center">Realidade</th>
+                                    <th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase tracking-wider">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-100">
+                                {% for item in resultado.detalhes %}
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-4 py-3">
+                                        <div class="text-sm font-medium text-gray-900">{{ item.nome_cenario }}</div>
+                                        <div class="text-[10px] text-gray-400">ID: {{ item.id_cenario }}</div>
+                                    </td>
+                                    <td class="px-4 py-3 text-center text-sm font-mono text-blue-600 font-bold bg-blue-50/30">
+                                        {{ item.tt_esperada }}
+                                    </td>
+                                    <td class="px-4 py-3 text-center text-sm font-mono {{ 'text-red-600 font-bold bg-red-50/30' if item.status != 'Sensibilizado com Sucesso' else 'text-gray-600' }}">
+                                        {{ item.tt_gerada or '---' }}
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        {% if item.status == 'Sensibilizado com Sucesso' %}
+                                            <span class="px-2 py-1 inline-flex text-[10px] leading-5 font-bold rounded-full bg-emerald-100 text-emerald-700">SUCESSO</span>
+                                        {% elif item.status == 'Divergente' %}
+                                            <span class="px-2 py-1 inline-flex text-[10px] leading-5 font-bold rounded-full bg-red-100 text-red-700">DIVERGENTE</span>
+                                        {% else %}
+                                            <span class="px-2 py-1 inline-flex text-[10px] leading-5 font-bold rounded-full bg-amber-100 text-amber-700">NÃO ACIONADO</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </main>
+
+    <footer class="mt-12 py-6 text-center text-gray-400 text-xs">
+        DataOps Pipeline Automático &bull; Desenvolvido com Flask & Pandas
+    </footer>
+
+    <script>
+        // Renderização do gráfico Plotly
+        {% if graphJSON %}
+            var graphs = {{ graphJSON | safe }};
+            var config = {responsive: true, displayModeBar: false};
+            
+            // Customizando layout para combinar com o dashboard
+            graphs.layout.paper_bgcolor = 'rgba(0,0,0,0)';
+            graphs.layout.plot_bgcolor = 'rgba(0,0,0,0)';
+            graphs.layout.legend = { orientation: 'h', y: -0.1 };
+            
+            Plotly.newPlot('chart', graphs.data, graphs.layout, config);
+        {% endif %}
+    </script>
+
+    <style>
+        .animate-fadeIn {
+            animation: fadeIn 0.6s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,73 @@
+
+# --- PYTHON ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# --- AMBIENTES VIRTUAIS ---
+# Poetry gerencia o ambiente, mas caso você use venv/conda por fora:
+.venv/
+venv/
+ENV/
+env/
+.env
+.flaskenv
+
+# --- IDEs (VS Code, PyCharm, etc) ---
+.vscode/
+.idea/
+.sixth/
+.claude/
+*.swp
+*.swo
+
+# --- DADOS E ARQUIVOS TEMPORÁRIOS (CRÍTICO) ---
+# Ignora arquivos de dados para evitar vazamento de informações contábeis
+*.csv
+*.xlsx
+*.xls
+*.xlsm
+uploads/
+temp/
+exports/
+!data_samples/*.xlsx
+!data_samples/*.csv
+
+# Exceção: Se você quiser manter arquivos de exemplo/template no repositório, 
+# descomente as linhas abaixo e coloque-os em uma pasta 'samples/':
+# !samples/*.csv
+# !samples/*.xlsx
+
+# --- LOGS ---
+*.log
+logs/
+
+# --- SISTEMA OPERACIONAL ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- POETRY ---
+# O pyproject.toml e o poetry.lock DEVEM ser versionados.
+# Ignoramos apenas o diretório de cache do poetry se ele estiver no projeto.
+.pytest_cache/
+.mypy_cache/
+```
