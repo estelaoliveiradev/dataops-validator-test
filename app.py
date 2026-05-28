@@ -51,8 +51,8 @@ class ReconciliadorEngine:
         df_pof.columns = df_pof.columns.str.strip().str.lower()
         
         # 3. Validação de Schema
-        cols_ph = {'id_cenario', 'nome_cenario', 'tt_esperada'}
-        cols_pof = {'id_origem', 'tt_gerada'}
+        cols_ph = {'id_cenario', 'nome_cenario', 'contabilizacao_esperada'}
+        cols_pof = {'id_origem', 'contabilizacao_gerada'}
         
         if not cols_ph.issubset(df_ph.columns):
             raise ValueError(f"Cenario_Esperado incompleta. Colunas necessárias: {cols_ph}")
@@ -62,7 +62,7 @@ class ReconciliadorEngine:
         # 4. Join Core (Left Join para manter a expectativa como guia)
         df_merge = pd.merge(
             df_ph, 
-            df_pof[['id_origem', 'tt_gerada', 'valor_lancamento']] if 'valor_lancamento' in df_pof.columns else df_pof[['id_origem', 'tt_gerada']], 
+            df_pof[['id_origem', 'contabilizacao_gerada', 'valor_lancamento']] if 'valor_lancamento' in df_pof.columns else df_pof[['id_origem', 'contabilizacao_gerada']], 
             left_on='id_cenario', 
             right_on='id_origem', 
             how='left'
@@ -74,8 +74,8 @@ class ReconciliadorEngine:
                 return "Não Sensibilizado"
             
             # Convertemos para string e removemos .0 (caso o Excel leia como float)
-            esp = str(row['tt_esperada']).replace('.0', '').strip()
-            ger = str(row['tt_gerada']).replace('.0', '').strip()
+            esp = str(row['contabilizacao_esperada']).replace('.0', '').strip()
+            ger = str(row['contabilizacao_gerada']).replace('.0', '').strip()
             
             if esp == ger:
                 return "Sensibilizado com Sucesso"
@@ -148,14 +148,14 @@ def download_template(tipo):
         df = pd.DataFrame({
             'id_cenario': [1, 2],
             'nome_cenario': ['Exemplo: Venda Cartão Debito', 'Exemplo: Pagamento Aluguel'],
-            'tt_esperada': [100, 550]
+            'contabilizacao_esperada': [100, 550]
         })
         filename = "template_expectativa_PH.xlsx"
     else:
         df = pd.DataFrame({
             'id_origem': [1],
             'carteira_financeira': ['MATRIZ'],
-            'tt_gerada': [100],
+            'contabilizacao_gerada': [100],
             'valor_lancamento': [1250.00]
         })
         filename = "template_realidade_POF.xlsx"
@@ -168,7 +168,7 @@ def download_template(tipo):
     return send_file(
         output,
         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        as_attachment=True,
+        as_acontabilizacaoachment=True,
         download_name=filename
     )
 
@@ -182,7 +182,7 @@ if __name__ == '__main__':
     if env == 'production':
         from waitress import serve
         print(">>> Iniciando Servidor de Produção (Waitress)")
-        print(">>> Acesse: http://localhost:8080")
+        print(">>> Acesse: hcontabilizacaop://localhost:8080")
         serve(app, host='0.0.0.0', port=8080)
     else:
         print(">>> Iniciando Servidor de Desenvolvimento (Debug Mode)")

@@ -13,7 +13,7 @@ class ReconciliadorEngine:
         # Join (Left Join para garantir que todos os cenários do plano apareçam)
         df_merge = pd.merge(
             df_ph, 
-            df_pof[['id_origem', 'tt_gerada', 'valor_lancamento']], 
+            df_pof[['id_origem', 'contabilizacao_gerada', 'valor_lancamento']], 
             left_on='id_cenario', 
             right_on='id_origem', 
             how='left'
@@ -23,7 +23,7 @@ class ReconciliadorEngine:
         def classificar(row):
             if pd.isna(row['id_origem']):
                 return "Não Sensibilizado"
-            elif row['tt_esperada'] == row['tt_gerada']:
+            elif row['contabilizacao_esperada'] == row['contabilizacao_gerada']:
                 return "Sensibilizado com Sucesso"
             else:
                 return "Divergente"

@@ -6,7 +6,7 @@ def generate_sample_data():
     ph_data = {
         'id_cenario': range(1, 11),
         'nome_cenario': [f"Cenário de Teste {i}" for i in range(1, 11)],
-        'tt_esperada': [100, 100, 200, 200, 300, 300, 400, 500, 600, 700]
+        'contabilizacao_esperada': [100, 100, 200, 200, 300, 300, 400, 500, 600, 700]
     }
     df_ph = pd.DataFrame(ph_data)
     df_ph.to_csv('base_ph.csv', index=False)
@@ -16,7 +16,7 @@ def generate_sample_data():
     pof_data = {
         'id_origem': [1, 2, 3, 4, 5, 6, 7, 8],
         'carteira_financeira': ['PF', 'PJ', 'PF', 'PJ', 'PF', 'PJ', 'PF', 'PJ'],
-        'tt_gerada': [100, 100, 200, 205, 300, 300, 410, 500], # IDs 4 e 7 são divergentes
+        'contabilizacao_gerada': [100, 100, 200, 205, 300, 300, 410, 500], # IDs 4 e 7 são divergentes
         'valor_lancamento': np.random.uniform(100, 5000, 8)
     }
     df_pof = pd.DataFrame(pof_data)

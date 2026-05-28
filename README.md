@@ -28,7 +28,7 @@ Este é um Produto Mínimo Viável (MVP) de uma aplicação web desenvolvida par
 O sistema realiza um `Left Join` entre a base de expectativa e a realidade, classificando cada cenário em:
 
 1.  ✅ **Sensibilizado com Sucesso:** Quando o código gerado pelo sistema é idêntico ao esperado pelo time de qualidade.
-2.  ⚠️ **Divergente:** Quando o cenário foi disparado, mas o código de roteiro (TT) gerado é diferente da expectativa.
+2.  ⚠️ **Divergente:** Quando o cenário foi disparado, mas o código de roteiro (contabilizacao) gerado é diferente da expectativa.
 3.  ❌ **Não Sensibilizado:** Quando o cenário mapeado no plano sequer foi encontrado nos dados processados (furo de cobertura).
 
 ---
@@ -43,7 +43,7 @@ O sistema realiza um `Left Join` entre a base de expectativa e a realidade, clas
 
 1.  **Clonar o repositório:**
     ```bash
-    git clone https://github.com/seu-usuario/conciliador-contabil.git
+    git clone hcontabilizacaops://github.com/seu-usuario/conciliador-contabil.git
     cd conciliador-contabil
     ```
 
@@ -67,7 +67,7 @@ O sistema realiza um `Left Join` entre a base de expectativa e a realidade, clas
     ```
 
 4.  **Acessar o sistema:**
-    Abra o navegador em `http://localhost:5000` (ou `:8080` em produção).
+    Abra o navegador em `hcontabilizacaop://localhost:5000` (ou `:8080` em produção).
 
 ---
 
