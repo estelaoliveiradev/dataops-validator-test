@@ -3,17 +3,17 @@ import time
 
 class ReconciliadorEngine:
     @staticmethod
-    def processar(file_ph, file_pof):
+    def processar(file_esperado, file_dadosbase):
         start_time = time.time()
         
         # Leitura dos dados
-        df_ph = pd.read_csv(file_ph)
-        df_pof = pd.read_csv(file_pof)
+        df_esperado = pd.read_csv(file_esperado)
+        df_dadosbase = pd.read_csv(file_dadosbase)
         
         # Join (Left Join para garantir que todos os cenários do plano apareçam)
         df_merge = pd.merge(
-            df_ph, 
-            df_pof[['id_origem', 'contabilizacao_gerada', 'valor_lancamento']], 
+            df_esperado, 
+            df_dadosbase[['id_origem', 'contabilizacao_gerada', 'valor_lancamento']], 
             left_on='id_cenario', 
             right_on='id_origem', 
             how='left'
@@ -31,7 +31,7 @@ class ReconciliadorEngine:
         df_merge['status'] = df_merge.apply(classificar, axis=1)
         
         # Métricas
-        total_cenarios = len(df_ph)
+        total_cenarios = len(df_esperado)
         sucessos = len(df_merge[df_merge['status'] == "Sensibilizado com Sucesso"])
         acuracia = (sucessos / total_cenarios) * 100
         tempo_proc = round(time.time() - start_time, 4)

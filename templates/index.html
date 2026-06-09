@@ -54,31 +54,31 @@
             <form action="/" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
                 <!-- Upload PH -->
                 <div class="space-y-2">
-                    <label class="block text-sm font-semibold text-gray-700">1. Cenario_Esperado (Expectativa)</label>
+                    <label class="block text-sm font-semibold text-gray-700">1. Cenário Esperado (Expectativa)</label>
                     <div class="relative border-2 border-dashed border-gray-200 rounded-xl p-4 hover:border-blue-400 transition-colors bg-gray-50">
-                        <input type="file" name="file_ph" accept=".csv, .xlsx, .xls" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" required>
+                        <input type="file" name="file_esperado" accept=".csv, .xlsx, .xls" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" required>
                         <div class="text-center">
                             <i class="fas fa-file-invoice text-gray-400 mb-2"></i>
                             <p class="text-xs text-gray-600">Arraste ou clique (CSV/XLSX)</p>
                         </div>
                     </div>
                     <a href="/download_template/ph" class="inline-flex items-center text-xs text-blue-600 hover:text-blue-800 font-medium mt-2">
-                        <i class="fas fa-download mr-1"></i> Baixar Modelo Excel PH
+                        <i class="fas fa-download mr-1"></i> Baixar Modelo Excel (Cenário Esperado)
                     </a>
                 </div>
 
-                <!-- Upload POF -->
+                <!-- Upload dadosbase -->
                 <div class="space-y-2">
-                    <label class="block text-sm font-semibold text-gray-700">2. Cenario_Realizado (Realidade)</label>
+                    <label class="block text-sm font-semibold text-gray-700">2. Cenário Realizado (Realidade)</label>
                     <div class="relative border-2 border-dashed border-gray-200 rounded-xl p-4 hover:border-blue-400 transition-colors bg-gray-50">
-                        <input type="file" name="file_pof" accept=".csv, .xlsx, .xls" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" required>
+                        <input type="file" name="file_dadosbase" accept=".csv, .xlsx, .xls" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" required>
                         <div class="text-center">
                             <i class="fas fa-file-import text-gray-400 mb-2"></i>
                             <p class="text-xs text-gray-600">Arraste ou clique (CSV/XLSX)</p>
                         </div>
                     </div>
-                    <a href="/download_template/pof" class="inline-flex items-center text-xs text-blue-600 hover:text-blue-800 font-medium mt-2">
-                        <i class="fas fa-download mr-1"></i> Baixar Modelo Excel POF
+                    <a href="/download_template/dadosbase" class="inline-flex items-center text-xs text-blue-600 hover:text-blue-800 font-medium mt-2">
+                        <i class="fas fa-download mr-1"></i> Baixar Modelo Excel (Base de Dados)
                     </a>
                 </div>
 

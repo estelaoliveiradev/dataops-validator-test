@@ -38,55 +38,61 @@ class ReconciliadorEngine:
             raise ValueError(f"Erro ao processar o arquivo {filename}: {str(e)}")
 
     @staticmethod
-    def processar(file_ph, file_pof):
-        """Executa a esteira de DataOps: Cruzamento, Validação e Métricas."""
+    def processar(file_template_expectativa, file_snapshot_processado):
+        """Executa a esteira de DataOps: Cruzamento, Validação e Métricas com nomenclatura acadêmica."""
         start_time = time.time()
         
         # 1. Leitura polimórfica
-        df_ph = ReconciliadorEngine.ler_arquivo(file_ph)
-        df_pof = ReconciliadorEngine.ler_arquivo(file_pof)
+        df_template = ReconciliadorEngine.ler_arquivo(file_template_expectativa)
+        df_snapshot = ReconciliadorEngine.ler_arquivo(file_snapshot_processado)
         
         # 2. Sanitização (Remover espaços e colocar em minúsculo para evitar erros de digitação)
-        df_ph.columns = df_ph.columns.str.strip().str.lower()
-        df_pof.columns = df_pof.columns.str.strip().str.lower()
+        df_template.columns = df_template.columns.str.strip().str.lower()
+        df_snapshot.columns = df_snapshot.columns.str.strip().str.lower()
         
         # 3. Validação de Schema
-        cols_ph = {'id_cenario', 'nome_cenario', 'contabilizacao_esperada'}
-        cols_pof = {'id_origem', 'contabilizacao_gerada'}
+        cols_template = {'id_cenario', 'nome_cenario', 'id_roteiro_esperado'}
+        cols_snapshot = {'id_origem', 'id_roteiro_gerado'}
         
-        if not cols_ph.issubset(df_ph.columns):
-            raise ValueError(f"Cenario_Esperado incompleta. Colunas necessárias: {cols_ph}")
-        if not cols_pof.issubset(df_pof.columns):
-            raise ValueError(f"Cenario_Realizado incompleta. Colunas necessárias: {cols_pof}")
+        if not cols_template.issubset(df_template.columns):
+            raise ValueError(f"TemplateExpectativa incompleto. Colunas necessárias: {cols_template}")
+        if not cols_snapshot.issubset(df_snapshot.columns):
+            raise ValueError(f"SnapshotProcessado incompleto. Colunas necessárias: {cols_snapshot}")
 
-        # 4. Join Core (Left Join para manter a expectativa como guia)
+        # 4. Join Core (Left Join para manter o template de expectativa como guia)
+        colunas_snapshot = ['id_origem', 'id_roteiro_gerado']
+        if 'segmento_carteira' in df_snapshot.columns:
+            colunas_snapshot.append('segmento_carteira')
+        if 'valor_evento' in df_snapshot.columns:
+            colunas_snapshot.append('valor_evento')
+        
         df_merge = pd.merge(
-            df_ph, 
-            df_pof[['id_origem', 'contabilizacao_gerada', 'valor_lancamento']] if 'valor_lancamento' in df_pof.columns else df_pof[['id_origem', 'contabilizacao_gerada']], 
+            df_template, 
+            df_snapshot[colunas_snapshot], 
             left_on='id_cenario', 
             right_on='id_origem', 
             how='left'
         )
         
-        # 5. Lógica de Classificação (Comparação robusta convertendo para string)
-        def classificar(row):
+        # 5. Lógica de Classificação (Comparação robusta de roteiros convertendo para string)
+        def classificar_homologacao(row):
             if pd.isna(row['id_origem']):
                 return "Não Sensibilizado"
             
-            # Convertemos para string e removemos .0 (caso o Excel leia como float)
-            esp = str(row['contabilizacao_esperada']).replace('.0', '').strip()
-            ger = str(row['contabilizacao_gerada']).replace('.0', '').strip()
+            # Convertemos para string e removemos .0 (caso leia como float)
+            roteiro_esperado = str(row['id_roteiro_esperado']).replace('.0', '').strip()
+            roteiro_gerado = str(row['id_roteiro_gerado']).replace('.0', '').strip()
             
-            if esp == ger:
+            if roteiro_esperado == roteiro_gerado:
                 return "Sensibilizado com Sucesso"
             else:
                 return "Divergente"
         
-        df_merge['status'] = df_merge.apply(classificar, axis=1)
+        df_merge['status_homologacao'] = df_merge.apply(classificar_homologacao, axis=1)
         
         # 6. Cálculo de Métricas
-        total = len(df_ph)
-        sucessos = len(df_merge[df_merge['status'] == "Sensibilizado com Sucesso"])
+        total = len(df_template)
+        sucessos = len(df_merge[df_merge['status_homologacao'] == "Sensibilizado com Sucesso"])
         acuracia = (sucessos / total) * 100 if total > 0 else 0
         tempo_total = round(time.time() - start_time, 4)
         
@@ -97,7 +103,7 @@ class ReconciliadorEngine:
                 "tempo": tempo_total,
                 "total": total
             },
-            "grafico": df_merge['status'].value_counts().to_dict()
+            "grafico": df_merge['status_homologacao'].value_counts().to_dict()
         }
 
 # --- ROTAS FLASK ---
@@ -109,12 +115,12 @@ def index():
     erro = None
 
     if request.method == 'POST':
-        file_ph = request.files.get('file_ph')
-        file_pof = request.files.get('file_pof')
+        file_template = request.files.get('file_template_expectativa')
+        file_snapshot = request.files.get('file_snapshot_processado')
         
-        if file_ph and file_pof:
+        if file_template and file_snapshot:
             try:
-                resultado = ReconciliadorEngine.processar(file_ph, file_pof)
+                resultado = ReconciliadorEngine.processar(file_template, file_snapshot)
                 
                 # Gerar Gráfico Plotly
                 fig = px.pie(
@@ -144,31 +150,31 @@ def download_template(tipo):
     """Gera um arquivo Excel de modelo em memória."""
     output = io.BytesIO()
     
-    if tipo == 'ph':
+    if tipo == 'template':
         df = pd.DataFrame({
             'id_cenario': [1, 2],
-            'nome_cenario': ['Exemplo: Venda Cartão Debito', 'Exemplo: Pagamento Aluguel'],
-            'contabilizacao_esperada': [100, 550]
+            'nome_cenario': ['Exemplo: Roteiro 1 - Folha Padrão', 'Exemplo: Roteiro 2 - Folha Especial'],
+            'id_roteiro_esperado': [100, 550]
         })
-        filename = "template_expectativa_PH.xlsx"
+        filename = "template_expectativa.xlsx"
     else:
         df = pd.DataFrame({
             'id_origem': [1],
-            'carteira_financeira': ['MATRIZ'],
-            'contabilizacao_gerada': [100],
-            'valor_lancamento': [1250.00]
+            'segmento_carteira': ['MATRIZ'],
+            'id_roteiro_gerado': [100],
+            'valor_evento': [1250.00]
         })
-        filename = "template_realidade_POF.xlsx"
+        filename = "snapshot_processado.xlsx"
     
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
-        df.to_excel(writer, index=False, sheet_name='Instrucoes')
+        df.to_excel(writer, index=False, sheet_name='Dados')
     
     output.seek(0)
     
     return send_file(
         output,
         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        as_acontabilizacaoachment=True,
+        as_attachment=True,
         download_name=filename
     )
 
