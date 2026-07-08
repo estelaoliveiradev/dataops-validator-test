@@ -1,4 +1,4 @@
-# Pipeline Automatizado de Conciliação e Homologação Contábil
+# Pipeline Automatizado para Conciliação Contábil
 
 ## 🎯 Sobre o Projeto
 
