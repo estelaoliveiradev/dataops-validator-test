@@ -2,29 +2,152 @@
 
 ## 🎯 Sobre o Projeto
 
-Este projeto consiste em um **Pipeline de Dados** acoplado a uma aplicação web modular desenvolvida em Python com o microframework **Flask**. O sistema funciona como um motor de auditoria computacional em ambiente de *staging*, projetado para validar a integridade de lançamentos gerados por **Sistemas de Roteamento Contábil** antes da consolidação definitiva no livro razão.
+Este projeto consiste em um **Pipeline de Dados Distribuído** desenvolvido sobre a plataforma **Databricks** com **Apache Spark**, acoplado a capacidades de **auditoria cognitiva** via **Gemini AI** (Google). O sistema funciona como um motor de auditoria computacional de nova geração em ambiente de *staging*, projetado para validar a integridade de lançamentos gerados por **Sistemas de Roteamento Contábil** antes da consolidação definitiva no livro razão.
 
-A solução visa mitigar o "atrito de integração" e fornecer uma barreira de segurança automatizada contra distorções materiais e falhas paramétricas em lotes financeiros, auxiliando organizações no cumprimento das exigências de governança corporativa e conformidade estipuladas pela **Seção 404 da Lei Sarbanes-Oxley (SOX)**.
+A solução combina **processamento distribuído em escala** (Spark), **análise semântica de conformidade** (IA Generativa) e **governança de dados** (Unity Catalog + Delta Lake) para mitigar o "atrito de integração" e fornecer uma barreira de segurança automatizada contra distorções materiais e falhas paramétricas em lotes financeiros.
+
+### Evolução do Projeto
+
+O sistema evoluiu de uma aplicação web Python/Flask monolítica para uma arquitetura moderna de dados:
+
+* **Versão 1.0** (Original): Aplicação Flask com processamento em memória (Pandas)
+* **Versão 2.0** (Atual): Pipeline Databricks + Spark + Gemini AI com auditoria cognitiva
+
+### Objetivo de Conformidade
+
+Auxiliar organizações no cumprimento das exigências de governança corporativa e conformidade estipuladas pela **Seção 404 da Lei Sarbanes-Oxley (SOX)**, fornecendo:
+
+* ✅ **Rastreabilidade total**: Registro imutável de todas as execuções
+* ✅ **Auditoria automatizada**: Análise cognitiva de padrões de não-conformidade
+* ✅ **Escalabilidade**: Processamento de milhões de transações por dia
+* ✅ **Transparência**: Explicabilidade das decisões de auditoria via LLM
 
 ---
 
-## 🏗️ Arquitetura do Sistema e Lógica de Negócio
+## 🏗️ Arquitetura do Sistema
 
-A aplicação opera inteiramente em memória para garantir máxima eficiência de processamento computacional, seguindo o fluxo de DataOps estruturado abaixo:
+### 📊 Versão 2.0 - Databricks + Spark + Gemini AI (Atual/Produção)
 
-[TemplateExpectativa (CSV)] ──┐
-├─→ [Left Join em Memória] ──→ [Classificador Core] ──→ [Dashboards Plotly]
-[SnapshotProcessado (CSV)]  ──┘
+**Arquitetura Distribuída de Nova Geração**
 
-O pipeline executa o cruzamento de dados (*left join*) de duas bases de entrada descaracterizadas de chaves proprietárias:
-1.  **`TemplateExpectativa`**: Base de referência que mapeia as regras de negócio contábeis planejadas e os identificadores de roteiros esperados para cada cenário.
-2.  **`SnapshotProcessado`**: Extrato consolidado de eventos gerados e sumarizados pelo motor de roteamento contábil automatizado.
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          CAMADA DE INGESTÃO                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  [TemplateExpectativa]                [SnapshotProcessado]                  │
+│         (CSV)                                 (CSV)                          │
+└───────────────┬───────────────────────────────┬─────────────────────────────┘
+                │                               │
+                └───────────────┬───────────────┘
+                                ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    CAMADA DE PROCESSAMENTO SPARK                            │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  • Databricks Serverless (Spark 4.2.0)                                      │
+│  • Left Join Distribuído em Memória                                         │
+│  • Classificador Determinístico (Sucesso/Divergente/Não Sensibilizado)     │
+│  • Agregações e Métricas de Conformidade                                    │
+└───────────────────────────────┬─────────────────────────────────────────────┘
+                                ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                     CAMADA DE AUDITORIA COGNITIVA                           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  • Gemini 3.6 Flash (Temperatura: 0.1 - Determinístico)                     │
+│  • Análise Semântica de Conformidade SOX                                    │
+│  • Diagnóstico de Causa Raiz                                                │
+│  • Mapeamento de Impacto Regulatório (Seção 404)                            │
+│  • Recomendações de Mitigação                                               │
+│  • Retry Automático com Exponential Backoff                                 │
+└───────────────────────────────┬─────────────────────────────────────────────┘
+                                ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                      CAMADA DE PERSISTÊNCIA                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  • Delta Lake (ACID Transactions)                                           │
+│  • Unity Catalog (Governança)                                               │
+│  • Time Travel (Versionamento)                                              │
+│  • Change Data Feed (Auditoria de Mudanças)                                 │
+│                                                                             │
+│  Tabelas:                                                                   │
+│  ├─ main.default.auditoria_performance_execucoes                            │
+│  └─ main.default.auditoria_performance_estatisticas                         │
+└───────────────────────────────┬─────────────────────────────────────────────┘
+                                ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    CAMADA DE VISUALIZAÇÃO E REPORTING                       │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  • Matplotlib (4 tipos de gráficos: linha, barras, box plot, CV%)           │
+│  • Resumo Executivo Markdown (métricas, recomendações SOX)                  │
+│  • SQL Analytics (queries de auditoria e rastreabilidade)                   │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Throughput:** 62 cenários/seg → 223k/hora → 5,36M/dia
+
+---
+
+### 📱 Versão 1.0 - Flask Web App (Baseline Acadêmico)
+
+**Arquitetura Monolítica Original**
+
+```
+┌────────────────────────────────────────────────────────┐
+│              CAMADA DE INGESTÃO (Upload)               │
+├────────────────────────────────────────────────────────┤
+│  [TemplateExpectativa.csv]  [SnapshotProcessado.csv]   │
+└─────────────────────┬──────────────────────────────────┘
+                      ▼
+┌────────────────────────────────────────────────────────┐
+│         PROCESSAMENTO EM MEMÓRIA (Pandas)              │
+├────────────────────────────────────────────────────────┤
+│  • Left Join (DataFrame.merge)                         │
+│  • Classificador Determinístico                        │
+│  • Agregações (groupby)                                │
+└─────────────────────┬──────────────────────────────────┘
+                      ▼
+┌────────────────────────────────────────────────────────┐
+│            VISUALIZAÇÃO WEB (Flask + Plotly)           │
+├────────────────────────────────────────────────────────┤
+│  • Servidor HTTP Local (127.0.0.1:5000)                │
+│  • Dashboards Interativos (Plotly.js)                  │
+│  • Interface Tailwind CSS                              │
+└────────────────────────────────────────────────────────┘
+```
+
+**Throughput:** ~52k registros/seg (single-thread, escala limitada)
+
+---
+
+### 🔄 Comparação: v1.0 vs v2.0
+
+| Aspecto | Flask v1.0 | Databricks v2.0 |
+|---------|------------|------------------|
+| **Processamento** | Pandas (single-thread) | Spark (distribuído) |
+| **Escala** | Limitada à memória local | Milhões de registros/dia |
+| **Auditoria** | Manual | Automática (Gemini AI) |
+| **Governança** | Arquivos locais | Delta Lake + Unity Catalog |
+| **Rastreabilidade** | Não nativa | Time Travel + Change Data Feed |
+| **Conformidade SOX** | Básica | Completa (ICFR Section 404) |
+| **Deployment** | Local/VM | Cloud-native (serverless) |
+| **Performance** | 0.009s (500 cenários) | 8.06s com auditoria IA (500 cenários) |
+| **Manutenibilidade** | Monolítica | Modular (células notebook) |
+
+---
+
+### 🎯 Lógica de Negócio (Comum a Ambas Versões)
+
+O pipeline executa o cruzamento de dados (*left join*) de duas bases de entrada:
+
+1. **`TemplateExpectativa`**: Base de referência que mapeia as regras de negócio contábeis planejadas e os identificadores de roteiros esperados para cada cenário.
+2. **`SnapshotProcessado`**: Extrato consolidado de eventos gerados e sumarizados pelo motor de roteamento contábil automatizado.
 
 ### Critérios de Classificação Operacional
-O algoritmo analisa os registros e classifica os cenários contábeis em três status determinísticos:
-* **Sensibilizado com Sucesso**: Quando o identificador do roteiro gerado é idêntico ao esperado.
-* **Divergente**: Quando o cenário foi acionado, mas o roteiro gerado diverge da matriz de parametrização regulatória.
-* **Não Sensibilizado**: Quando o cenário mapeado na expectativa está ausente ou nulo no processamento realizado (evento órfão).
+
+O algoritmo analisa os registros e classifica os cenários contábeis em **três status determinísticos**:
+
+* ✅ **Sensibilizado com Sucesso**: Quando o identificador do roteiro gerado é idêntico ao esperado.
+* ⚠️ **Divergente**: Quando o cenário foi acionado, mas o roteiro gerado diverge da matriz de parametrização regulatória.
+* ❌ **Não Sensibilizado**: Quando o cenário mapeado na expectativa está ausente ou nulo no processamento realizado (evento órfão).
 
 ---
 
