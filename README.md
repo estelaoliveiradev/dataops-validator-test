@@ -222,11 +222,15 @@ O projeto foi **testado em dois ambientes distintos** com objetivos e arquitetur
 **Ambiente de Teste:**
 * Databricks Serverless Compute
 * Apache Spark 4.2.0 (processamento distribuído)
-* Bateria de **5 execuções independentes** (2.500 cenários totais)
 * Tecnologia: Spark + Gemini 3.6 Flash + Delta Lake
 
-**Metodologia:**
-Análise estatística robusta com médias, desvio padrão e coeficiente de variação.
+---
+
+#### 📊 Teste 1: Pipeline Completo (500 cenários + Gemini AI)
+
+**Escopo:** Conciliação + Auditoria Cognitiva + Análise SOX  
+**Execuções:** Bateria de 5 execuções independentes (2.500 cenários totais)  
+**Metodologia:** Análise estatística robusta (média, desvio padrão, CV%)
 
 **Métricas de Performance:**
 
@@ -253,6 +257,24 @@ Análise estatística robusta com médias, desvio padrão e coeficiente de varia
 * ✅ **Pipeline Robusto**: CV < 15% indica boa previsibilidade
 * ⚠️ **Gargalo Identificado**: Gemini representa 93,8% do tempo total
 * 📈 **Recomendação**: Otimizar inferência (cache, batch, modelo mais rápido)
+
+---
+
+#### ⚡ Teste 2: Benchmark de Escalabilidade (200k cenários, sem IA)
+
+**Escopo:** Conciliação pura (join + classificação + agregação)  
+**Execuções:** 1 execução (benchmark comparativo Spark vs Pandas)  
+**Objetivo:** Identificar ponto de inflexão de escalabilidade
+
+**Resultado:**
+
+| Tecnologia | Tempo de Execução | Throughput | Observação |
+|------------|---------------------|------------|---------------|
+| **Apache Spark 4.2.0** | 0,684s | 292.398 reg/seg | 🏆 Vencedor em escala |
+| **Pandas (local)** | 0,862s | 232.019 reg/seg | Overhead de memória |
+
+**Conclusão:**  
+Com **200k registros**, Spark é **26% mais rápido** que Pandas, confirmando o ponto de inflexão próximo de 75k registros. Abaixo desse volume, o overhead de distribuição do Spark (~200ms) supera os ganhos de paralelização.
 
 ---
 
