@@ -21,6 +21,7 @@ wheels/
 .installed.cfg
 *.egg
 MANIFEST
+doc/
 
 # --- AMBIENTES VIRTUAIS ---
 # Poetry gerencia o ambiente, mas caso você use venv/conda por fora:
