@@ -121,12 +121,15 @@ DESCRIBE HISTORY main.default.auditoria_performance_execucoes;
 - [ ] Otimização Gemini (cache, batch inference)
 - [ ] Meta: reduzir tempo de 8s → 4-5s
 - [ ] Dashboard interativo Streamlit/Dash
+- [ ] Interface em linguagem NLP - Democratização análise de dados
 
 ### Longo Prazo
 - [ ] SLA de performance (P95 < 10s)
 - [ ] Monitoramento contínuo de acurácia
 - [ ] Alertas automáticos (CV% > 20%)
 - [ ] Integração com sistemas ERP
+
+
 
 ## 👥 Contribuidores
 

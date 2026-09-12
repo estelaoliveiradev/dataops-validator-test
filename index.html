@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfólio TCC: Homologação Contábil Automatizada</title>
+    <style>
+        :root {
+            --primary-color: #0f4c81;
+            --secondary-color: #f4f7f6;
+            --text-color: #333;
+            --code-bg: #1e1e1e;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--secondary-color);
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 3rem 1rem;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        header p {
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+        }
+        .metrics {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            margin: 2rem 0;
+        }
+        .metric-box {
+            background: var(--secondary-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            width: 30%;
+        }
+        .metric-box h3 {
+            margin: 0;
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+        pre {
+            background: var(--code-bg);
+            color: #d4d4d4;
+            padding: 1.5rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95rem;
+        }
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+        .function { color: #dcdcaa; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Integração de pipeline de dados, computação distribuída e agente cognitivo na homologação automatizada de sistemas contábeis</h1>
+        <p>Estela de Oliveira | MBA USP/ESALQ em Engenharia de Software</p>
+    </header>
+
+    <div class="container">
+        
+        <div class="card">
+            <h2>Visão Geral da Solução</h2>
+            <p>O projeto mitiga gargalos operacionais e vulnerabilidades a distorções materiais que comprometem a conformidade com a Seção 404 da Lei Sarbanes-Oxley (SOX). A esteira de conciliação foi construída sob uma arquitetura evolutiva escalonada para o ecossistema <strong>Databricks Serverless (Apache Spark)</strong> e integrada a uma camada cognitiva via <strong>Gemini 3.6 Flash</strong>.</p>
+        </div>
+
+        <div class="card">
+            <h2>Resultados e Desempenho (Teste de Estresse: 200.000 Cenários)</h2>
+            <div class="metrics">
+                <div class="metric-box">
+                    <h3>85,4%</h3>
+                    <p>Acurácia Global (Aderência SOX)</p>
+                </div>
+                <div class="metric-box">
+                    <h3>0,68s</h3>
+                    <p>Tempo de Processamento (Spark)</p>
+                </div>
+                <div class="metric-box">
+                    <h3>20,6%</h3>
+                    <p>Ganho de Velocidade vs Single-Node</p>
+                </div>
+            </div>
+            <p>O agente cognitivo diagnosticou com exatidão a causa-raiz (redirecionamento indevido para a conta transitória 1.1.9.99), emitindo o status formal de <strong>Em Risco Material</strong> com orientações para mitigação.</p>
+        </div>
+
+        <div class="card">
+            <h2>Arquitetura e Código-Fonte</h2>
+
+            <h3>1. Contrato de Tipagem (Pydantic)</h3>
+            <p>Esquema de validação para forçar respostas estruturadas da inteligência artificial.</p>
+<pre><code><span class="keyword">from</span> pydantic <span class="keyword">import</span> BaseModel, Field
+
+<span class="keyword">class</span> <span class="function">RelatorioAuditoriaSOX</span>(BaseModel):
+    status_conformidade: <span class="keyword">str</span> = Field(description=<span class="string">"Status geral: 'Em Conformidade' ou 'Em Risco Material'"</span>)
+    acuracia_auditada_pct: <span class="keyword">float</span> = Field(description=<span class="string">"Percentual de acurácia global da esteira"</span>)
+    diagnostico_causa_raiz: <span class="keyword">str</span> = Field(description=<span class="string">"Análise detalhada do desvio paramétrico identificado"</span>)
+    impacto_regulatorio_sox: <span class="keyword">str</span> = Field(description=<span class="string">"Enquadramento do risco frente à Seção 404 da SOX"</span>)
+    recomendacoes_mitigacao: <span class="keyword">list</span>[<span class="keyword">str</span>] = Field(description=<span class="string">"Lista de ações prescritivas para correção do motor"</span>)</code></pre>
+
+            <h3>2. Conciliação Distribuída (Apache Spark)</h3>
+            <p>Operação relacional executada no Databricks em processamento paralelo.</p>
+<pre><code><span class="comment"># Left Join entre Template (expectativa) e Snapshot (processado)</span>
+df_join = df_template.alias(<span class="string">"t"</span>).join(
+    df_snapshot.alias(<span class="string">"s"</span>),
+    on=<span class="string">"id_cenario"</span>,
+    how=<span class="string">"left"</span>
+)
+
+<span class="comment"># Regra de Negócio: Classificação em 3 status determinísticos</span>
+df_conciliado = df_join.withColumn(
+    <span class="string">"status_homologacao"</span>,
+    F.when(F.col(<span class="string">"s.id_cenario"</span>).isNull(), <span class="string">"Não Sensibilizado"</span>)
+    .when(
+        (F.col(<span class="string">"t.conta_debito_esperada"</span>) != F.col(<span class="string">"s.conta_debito_gerada"</span>)) |
+        (F.col(<span class="string">"t.conta_credito_esperada"</span>) != F.col(<span class="string">"s.conta_credito_gerada"</span>)) |
+        (F.col(<span class="string">"t.valor_esperado"</span>) != F.col(<span class="string">"s.valor_gerado"</span>)),
+        <span class="string">"Divergente"</span>
+    )
+    .otherwise(<span class="string">"Sensibilizado com Sucesso"</span>)
+)</code></pre>
+
+            <h3>3. Submissão ao Modelo Fundacional</h3>
+            <p>Configuração da API cognitiva com temperatura zero-shot para auditoria.</p>
+<pre><code><span class="keyword">import</span> google.generativeai <span class="keyword">as</span> genai
+
+<span class="comment"># Recupera a chave da API via Databricks Secrets</span>
+GEMINI_API_KEY = dbutils.secrets.get(scope=<span class="string">"gemini-secrets"</span>, key=<span class="string">"gemini_api_key"</span>)
+client = genai.Client(api_key=GEMINI_API_KEY)
+
+<span class="comment"># Configuração determinística para a emissão do parecer</span>
+<span class="comment"># A invocação utiliza o schema definido via Pydantic e temperature=0.1</span></code></pre>
+        </div>
+    </div>
+</body>
+</html>

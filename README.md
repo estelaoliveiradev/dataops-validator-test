@@ -679,6 +679,7 @@ dataops-validator-test/
 * [ ] Otimização Gemini (cache, batch inference, modelo mais rápido)
 * [ ] Meta: Reduzir tempo total de 8s → 4-5s
 * [ ] Dashboard interativo (Streamlit/Dash)
+* [ ] Interface em linguagem NLP - Democratização análise de dados
 
 ### Longo Prazo
 
