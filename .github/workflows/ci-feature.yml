@@ -38,8 +38,9 @@ jobs:
 
       - name: Checagem Rápida de Sintaxe & Linter (Ruff)
         run: |
-          echo "::group::Executando Ruff..."
-          ruff check . --select=E,F,W --ignore=E501
+          echo "::group::Executando Ruff Linter..."
+          ruff check .
+          ruff format --check .
           echo "::endgroup::"
           python -m compileall -q .
 
