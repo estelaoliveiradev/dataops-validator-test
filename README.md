@@ -1,5 +1,11 @@
 # Pipeline Automatizado para Conciliação Contábil
 
+[![CI - PR Validation](https://github.com/estelaoliveiradev/dataops-validator-test/actions/workflows/ci-pr-validation.yml/badge.svg)](https://github.com/estelaoliveiradev/dataops-validator-test/actions/workflows/ci-pr-validation.yml)
+[![GitFlow](https://img.shields.io/badge/gitflow-feature%20%7C%20develop%20%7C%20release%20%7C%20main-blue)](docs/GITFLOW_CICD.md)
+[![Python 3.11 | 3.12](https://img.shields.io/badge/python-3.11%20%7C%203.12-blue.svg)](https://www.python.org/)
+
+> 📘 **Documentação do Fluxo GitFlow & CI/CD:** Consulte o [Guia Completo de GitFlow e CI/CD](docs/GITFLOW_CICD.md) para detalhes das branches, esteiras de automação e regras de promoção de ambiente.
+
 ## 🎯 Sobre o Projeto
 
 Este projeto consiste em um **Pipeline de Dados Distribuído** desenvolvido sobre a plataforma **Databricks** com **Apache Spark**, acoplado a capacidades de **auditoria cognitiva** via **Gemini AI** (Google). O sistema funciona como um motor de auditoria computacional de nova geração em ambiente de *staging*, projetado para validar a integridade de lançamentos gerados por **Sistemas de Roteamento Contábil** antes da consolidação definitiva no livro razão.
@@ -629,13 +635,22 @@ O notebook gera um **relatório markdown completo** contendo:
 
 ```
 dataops-validator-test/
+├── .github/
+│   ├── workflows/
+│   │   ├── ci-feature.yml            # CI: Validação de Feature Branches (Fast Feedback)
+│   │   ├── ci-pr-validation.yml      # CI: Validação de PRs (Linter, Bandit, Pytest)
+│   │   ├── cd-develop-staging.yml    # CD: Deploy contínuo em Staging
+│   │   ├── cd-release-homolog.yml    # CD: Release Candidate em Homologação / UAT
+│   │   └── cd-production.yml         # CD: Release Oficial e Deploy em Produção
+│   └── pull_request_template.md      # Template padronizado para PRs
+├── docs/
+│   └── GITFLOW_CICD.md               # Guia de Operação GitFlow & Esteiras de CI/CD
 ├── databricks/
 │   └── conciliador_contabil.ipynb    # Pipeline completo (Spark + Gemini + Auditoria)
-├── MASSA/
-│   └── gerar_massa_academica.py      # Gerador de dados simulados
-├── app.py                            # Aplicação Flask (versão web original)
+├── app.py                            # Aplicação Flask (motor de conciliação)
+├── Dockerfile                        # Containerização para produção e CI/CD
 ├── requirements.txt                  # Dependências Python
-└── README.md                         # Este arquivo
+└── README.md                         # Documentação principal
 ```
 
 ### Notebooks Databricks

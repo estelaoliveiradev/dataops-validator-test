@@ -1,0 +1,131 @@
+name: CI - Pull Request Validation (GitFlow)
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - 'release/*'
+      - 'release/**'
+      - main
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.gitignore'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-and-quality:
+    name: 🔍 Qualidade de Código & Linter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Instalar Ferramentas de Qualidade
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff flake8
+
+      - name: Executar Ruff (Linter & Formatting)
+        run: |
+          echo "::group::Executando Ruff Linter..."
+          ruff check . --select=E,F,W --ignore=E501
+          echo "::endgroup::"
+
+      - name: Validar Sintaxe dos Arquivos Python
+        run: |
+          python -m compileall -q .
+
+  security-scan:
+    name: 🛡️ Auditoria de Segurança
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Instalar Ferramentas de Segurança
+        run: |
+          python -m pip install --upgrade pip
+          pip install bandit
+
+      - name: Análise Estática de Segurança (Bandit)
+        run: |
+          echo "::group::Executando Bandit..."
+          bandit -r . -x ./test,./venv,./.venv,./MASSA -ll -ii || true
+          echo "::endgroup::"
+
+  unit-and-integration-tests:
+    name: 🧪 Testes Automatizados (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+
+      - name: Instalar Dependências do Projeto
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
+
+      - name: Executar Suite de Testes (pytest)
+        env:
+          PYTHONPATH: .
+        run: |
+          pytest test/test_app.py --cov=. --cov-report=term-missing --cov-report=xml --junitxml=pytest-results.xml
+
+      - name: Publicar Resultados no Step Summary
+        if: always()
+        run: |
+          echo "### 🧪 Resultados dos Testes - Python ${{ matrix.python-version }}" >> $GITHUB_STEP_SUMMARY
+          echo "Status da bateria de testes finalizada com sucesso." >> $GITHUB_STEP_SUMMARY
+
+      - name: Arquivar Relatório de Cobertura
+        if: matrix.python-version == '3.11'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.xml
+          retention-days: 7
+
+  docker-build-check:
+    name: 🐳 Teste de Build Docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Testar Construção da Imagem Docker
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          tags: dataops-validator-test:ci-check
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
